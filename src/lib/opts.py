@@ -266,14 +266,14 @@ class opts(object):
       if i < rest_batch_size % (len(opt.gpus) - 1):
         slave_chunk_size += 1
       opt.chunk_sizes.append(slave_chunk_size)
-    print('training chunk_sizes:', opt.chunk_sizes)
+    #print('training chunk_sizes:', opt.chunk_sizes)
 
     opt.root_dir = os.path.join(os.path.dirname(__file__), '..', '..')
     opt.data_dir = os.path.join(opt.root_dir, 'data')
     opt.exp_dir = os.path.join(opt.root_dir, 'exp', opt.task)
     opt.save_dir = os.path.join(opt.exp_dir, opt.exp_id)
     opt.debug_dir = os.path.join(opt.save_dir, 'debug')
-    print('The output will be saved to ', opt.save_dir)
+    #print('The output will be saved to ', opt.save_dir)
     
     if opt.resume and opt.load_model == '':
       model_path = opt.save_dir[:-4] if opt.save_dir.endswith('TEST') \
@@ -335,7 +335,7 @@ class opts(object):
 
   def init(self, args=''):
     default_dataset_info = {
-      'ctdet': {'default_resolution': [512, 512], 'num_classes': 80, 
+      'ctdet': {'default_resolution': [512, 512], 'num_classes': 10, 
                 'mean': [0.408, 0.447, 0.470], 'std': [0.289, 0.274, 0.278],
                 'dataset': 'coco'},
       'exdet': {'default_resolution': [512, 512], 'num_classes': 80, 

@@ -8,7 +8,6 @@ from progress.bar import Bar
 import time
 import torch
 
-from external.nms import soft_nms
 from models.decode import ctdet_decode
 from models.utils import flip_tensor
 from utils.image import get_affine_transform
@@ -24,6 +23,7 @@ class CtdetDetector(BaseDetector):
   def process(self, images, return_time=False):
     with torch.no_grad():
       output = self.model(images)[-1]
+  
       hm = output['hm'].sigmoid_()
       wh = output['wh']
       reg = output['reg'] if self.opt.reg_offset else None
@@ -31,10 +31,9 @@ class CtdetDetector(BaseDetector):
         hm = (hm[0:1] + flip_tensor(hm[1:2])) / 2
         wh = (wh[0:1] + flip_tensor(wh[1:2])) / 2
         reg = reg[0:1] if reg is not None else None
-      torch.cuda.synchronize()
       forward_time = time.time()
       dets = ctdet_decode(hm, wh, reg=reg, K=self.opt.K)
-      
+
     if return_time:
       return output, dets, forward_time
     else:
@@ -89,4 +88,4 @@ class CtdetDetector(BaseDetector):
       for bbox in results[j]:
         if bbox[4] > self.opt.vis_thresh:
           debugger.add_coco_bbox(bbox[:4], j - 1, bbox[4], img_id='ctdet')
-    debugger.show_all_imgs(pause=self.pause)
+    #debugger.show_all_imgs(pause=self.pause)
